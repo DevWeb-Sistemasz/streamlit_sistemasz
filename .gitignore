@@ -1,0 +1,24 @@
+# Caché y compilados de Python (evita subir la carpeta que viste en tu directorio)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Entornos virtuales (por si decides aislar tus librerías localmente)
+venv/
+env/
+.env/
+
+# Archivos locales de base de datos (ya la tienes en cPanel, no necesitas subir el script)
+base de datos.sql
+
+# Secretos y credenciales locales (crucial para seguridad)
+.env
+.streamlit/secrets.toml
+
+# Archivos de configuración del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Carpetas de editores de código (como VS Code)
+.vscode/
