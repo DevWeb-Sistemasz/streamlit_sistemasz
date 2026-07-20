@@ -456,7 +456,8 @@ def obtener_ruta_imagen(modelo, tipo_producto):
     nombre_seguro = str(modelo).replace("/", "_").strip()
     carpeta_mayusculas = str(tipo_producto).strip().upper()
     
-    ruta_base_completa = r".\IMAGENES"
+    # Detecta la carpeta actual automáticamente de forma agnóstica al sistema operativo (Windows / Linux)
+    ruta_base_completa = os.path.join(os.path.dirname(__file__), "IMAGENES")
     carpeta_destino = os.path.join(ruta_base_completa, carpeta_mayusculas)
     
     extensiones = [".jpg", ".jpeg", ".png", ".webp"]
@@ -1015,7 +1016,8 @@ with pestaña_admin:
                                 nombre_final_imagen = f"{nombre_archivo_limpio}{extension}"
                                 
                                 folder_type = "DISCO DURO" if carpeta_imagenes == "DISCOS" else carpeta_imagenes
-                                ruta_destino = os.path.join(r".\IMAGENES", folder_type, nombre_final_imagen)
+                                # Ruta agnóstica al sistema operativo
+                                ruta_destino = os.path.join(os.path.dirname(__file__), "IMAGENES", folder_type, nombre_final_imagen)
                                 os.makedirs(os.path.dirname(ruta_destino), exist_ok=True)
                                 
                                 with open(ruta_destino, "wb") as f:
@@ -1096,7 +1098,8 @@ with pestaña_admin:
                             nombre_limpio_nuevo = "".join(c for c in nuevo_modelo_input if c.isalnum() or c in (' ', '-', '_')).strip()
                             
                             folder_type = "DISCO DURO" if carpeta_imagenes == "DISCOS" else carpeta_imagenes
-                            dir_fotos = os.path.join(r".\IMAGENES", folder_type)
+                            # Ruta agnóstica al sistema operativo
+                            dir_fotos = os.path.join(os.path.dirname(__file__), "IMAGENES", folder_type)
                             
                             nombre_final_imagen = None
 
