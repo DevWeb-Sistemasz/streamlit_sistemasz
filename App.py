@@ -6,6 +6,7 @@ import io
 from fpdf import FPDF
 
 # 1. LIBRERÍAS DE CONEXIÓN A MYSQL
+import mysql.connector
 from sqlalchemy import create_engine
 
 # IMPORTACIÓN DE TUS MÓDULOS PROPIOS
@@ -348,11 +349,24 @@ st.title("Catálogo Inteligente y Sistema Experto en Videovigilancia")
 aplicar_estilos_css()
 
 # 3. CONFIGURACIÓN DEL MOTOR DE BASE DE DATOS (MYSQL)
-USUARIO = "root"
-CONTRASEÑA = ""  
-HOST = "127.0.0.1"
-PUERTO = "3307"
-BASE_DATOS = "EXPERTO_SEGURIDAD"
+USUARIO = st.secrets["DB_USER"]
+CONTRASEÑA = st.secrets["DB_PASS"]
+HOST = st.secrets["DB_HOST"]
+PUERTO = st.secrets["DB_PORT"]
+BASE_DATOS = st.secrets["DB_NAME"]
+
+try:
+    conexion = mysql.connector.connect(
+        host=HOST,
+        user=USUARIO,
+        password=CONTRASEÑA,
+        database=BASE_DATOS,
+        port=PUERTO
+    )
+    cursor = conexion.cursor()
+except Exception as e:
+    st.error(f"Error al conectar a la base de datos MySQL: {e}")
+    conexion = None
 
 engine = create_engine(f"mysql+mysqlconnector://{USUARIO}:{CONTRASEÑA}@{HOST}:{PUERTO}/{BASE_DATOS}")
 
