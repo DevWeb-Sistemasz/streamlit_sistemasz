@@ -46,18 +46,44 @@ def generar_pdf_propuesta(camara_final, grabador_final, disco_final, infra, num_
     pdf.rect(0, 0, 210, 6, 'F')
     
     pdf.ln(4)
+    y_header = pdf.get_y()
+    
+    # Columna Izquierda: Logo / Título
+    pdf.set_xy(10, y_header)
     pdf.set_font("Helvetica", "B", 20)
+    pdf.set_text_color(34, 197, 94) # Verde
+    pdf.cell(100, 7, "Sistemas Z".encode('latin-1', 'replace').decode('latin-1'), ln=True)
+    
+    pdf.set_x(10)
+    pdf.set_font("Helvetica", "B", 10.5)
     pdf.set_text_color(15, 23, 42)
-    pdf.cell(0, 8, "PROPUESTA TÉCNICA COMERCIAL".encode('latin-1', 'replace').decode('latin-1'), ln=True)
+    pdf.cell(100, 4.5, "PROPUESTA TÉCNICA COMERCIAL".encode('latin-1', 'replace').decode('latin-1'), ln=True)
     
-    pdf.set_font("Helvetica", "", 9.5)
+    pdf.set_x(10)
+    pdf.set_font("Helvetica", "I", 8)
     pdf.set_text_color(100, 116, 139)
-    pdf.cell(0, 4, "Solución optimizada por Sistema Experto de Videovigilancia".encode('latin-1', 'replace').decode('latin-1'), ln=True)
+    pdf.cell(100, 3.5, "Solución optimizada por Sistema Experto".encode('latin-1', 'replace').decode('latin-1'), ln=True)
     
-    pdf.ln(2)
-    pdf.set_draw_color(241, 245, 249)
+    # Columna Derecha: Información de Contacto
+    pdf.set_xy(110, y_header)
+    pdf.set_font("Helvetica", "B", 8)
+    pdf.set_text_color(34, 197, 94)
+    pdf.cell(90, 4, "CONTACTO Y SOPORTE".encode('latin-1', 'replace').decode('latin-1'), align="R", ln=True)
+    
+    pdf.set_font("Helvetica", "", 7)
+    pdf.set_text_color(51, 65, 85)
+    
+    pdf.set_x(110)
+    pdf.cell(90, 3.5, "WhatsApp: 246 222 2429 | 248 200 6949".encode('latin-1', 'replace').decode('latin-1'), align="R", ln=True)
+    pdf.set_x(110)
+    pdf.cell(90, 3.5, "Llámanos: 246 462 3274 | 248 487 0880".encode('latin-1', 'replace').decode('latin-1'), align="R", ln=True)
+    pdf.set_x(110)
+    pdf.cell(90, 3.5, "Correo: ventas@sistemasz.com | Web: sistemasz.com".encode('latin-1', 'replace').decode('latin-1'), align="R", ln=True)
+    
+    pdf.set_xy(10, y_header + 16)
+    pdf.set_draw_color(226, 232, 240)
     pdf.line(10, pdf.get_y(), 200, pdf.get_y())
-    pdf.ln(2.5)
+    pdf.ln(3.5)
 
     def formatear_precio(val, multiplicador=1):
         try:
@@ -278,17 +304,17 @@ def generar_pdf_propuesta(camara_final, grabador_final, disco_final, infra, num_
         y_tarjetas_inicio = pdf.get_y() + 5
         
         ancho_tarjeta_alt = 60
-        alto_tarjeta_alt = 48  
+        alto_tarjeta_alt = 40  
         espacio_entre_alt = 5
         
         x_actual = x_inicio
         y_actual = y_tarjetas_inicio
         
-        for idx, alt_row in alternativas_camaras.iterrows():
-            if idx > 0 and idx % 3 == 0:
+        for seq_idx, (idx, alt_row) in enumerate(alternativas_camaras.iterrows()):
+            if seq_idx > 0 and seq_idx % 3 == 0:
                 x_actual = x_inicio
                 y_actual += alto_tarjeta_alt + 10
-                if y_actual > 255:
+                if y_actual > 250:
                     pdf.add_page()
                     y_actual = 20
             
@@ -327,6 +353,57 @@ def generar_pdf_propuesta(camara_final, grabador_final, disco_final, infra, num_
             
         pdf.set_xy(x_inicio, y_actual + alto_tarjeta_alt + 5)
         
+    # --- SECCIÓN DE TÉRMINOS Y CONDICIONES (SISTEMAS Z) ---
+    if pdf.get_y() > 230:
+        pdf.add_page()
+    else:
+        pdf.ln(5)
+        
+    y_start = pdf.get_y()
+    
+    # Dibujar una línea divisoria decorativa verde
+    pdf.set_draw_color(34, 197, 94)
+    pdf.set_line_width(0.4)
+    pdf.line(10, y_start, 200, y_start)
+    pdf.ln(3.5)
+    
+    pdf.set_text_color(15, 23, 42)
+    
+    # Título Términos y Condiciones
+    pdf.set_font("Helvetica", "B", 9)
+    pdf.set_text_color(34, 197, 94)
+    pdf.cell(0, 4.5, "TÉRMINOS Y CONDICIONES".encode('latin-1', 'replace').decode('latin-1'), ln=True)
+    
+    pdf.set_font("Helvetica", "", 8)
+    pdf.set_text_color(51, 65, 85)
+    
+    pdf.cell(0, 4.5, "- Duración de la cotización: 7 días naturales.".encode('latin-1', 'replace').decode('latin-1'), ln=True)
+    pdf.cell(0, 4.5, "- Pagos únicamente en sucursal.".encode('latin-1', 'replace').decode('latin-1'), ln=True)
+    pdf.multi_cell(0, 4, "- Las imágenes son ilustrativas, algunos accesorios o características incluidas en las imágenes pueden variar.".encode('latin-1', 'replace').decode('latin-1'))
+    
+    pdf.ln(2.5)
+    y_next = pdf.get_y()
+    
+    # --- CUADRO DE SEGUIMIENTO Y FECHA ---
+    pdf.set_fill_color(240, 253, 244)
+    pdf.set_draw_color(187, 247, 208)
+    pdf.rect(10, y_next, 190, 15, 'DF')
+    
+    from datetime import datetime
+    fecha_hoy = datetime.now().strftime("%d/%m/%Y")
+    
+    pdf.set_xy(13, y_next + 2.5)
+    pdf.set_font("Helvetica", "B", 7.5)
+    pdf.set_text_color(22, 163, 74)
+    pdf.cell(100, 3.5, f"Fecha de cotización: {fecha_hoy}".encode('latin-1', 'replace').decode('latin-1'))
+    
+    pdf.set_xy(13, y_next + 7.5)
+    pdf.set_font("Helvetica", "B", 8)
+    pdf.set_text_color(21, 128, 61)
+    pdf.cell(180, 4, "NOTA IMPORTANTE: Presentarse con este PDF en la sucursal para el seguimiento del proceso.".encode('latin-1', 'replace').decode('latin-1'))
+    
+    pdf.ln(10)
+    
     # Obtener el PDF como string de caracteres (latin-1) y codificar a bytes para el buffer
     pdf_string = pdf.output(dest='S')
     pdf_bytes = pdf_string.encode('latin-1')
@@ -355,20 +432,21 @@ HOST = st.secrets["DB_HOST"]
 PUERTO = st.secrets["DB_PORT"]
 BASE_DATOS = st.secrets["DB_NAME"]
 
-try:
-    conexion = mysql.connector.connect(
-        host=HOST,
-        user=USUARIO,
-        password=CONTRASEÑA,
-        database=BASE_DATOS,
-        port=PUERTO
-    )
-    cursor = conexion.cursor()
-except Exception as e:
-    st.error(f"Error al conectar a la base de datos MySQL: {e}")
-    conexion = None
+@st.cache_resource
+def obtener_engine():
+    try:
+        url_conexion = f"mysql+mysqlconnector://{USUARIO}:{CONTRASEÑA}@{HOST}:{PUERTO}/{BASE_DATOS}"
+        # Se agregan pool_recycle y pool_pre_ping para evitar desconexiones por inactividad
+        engine_creado = create_engine(url_conexion, pool_recycle=3600, pool_pre_ping=True)
+        # Verificación inicial rápida para asegurar la conexión
+        with engine_creado.connect() as conn:
+            pass
+        return engine_creado
+    except Exception as e:
+        st.error(f"Error crítico al conectar a la base de datos MySQL: {e}")
+        return None
 
-engine = create_engine(f"mysql+mysqlconnector://{USUARIO}:{CONTRASEÑA}@{HOST}:{PUERTO}/{BASE_DATOS}")
+engine = obtener_engine()
 
 # 4. FUNCIÓN PARA BUSCAR IMÁGENES
 def obtener_ruta_imagen(modelo, tipo_producto):
@@ -389,8 +467,11 @@ def obtener_ruta_imagen(modelo, tipo_producto):
             
     return "https://placehold.co/400x300/0f172a/94a3b8?text=Imagen+No+Disponible"
 
-# 5. CARGA DE DATOS CENTRALIZADA CON MANEJO DE SESSION_STATE
+# 5. CARGA DE DATOS CENTRALIZADA CON MANEJO DE SESSION_STATE Y CACHÉ
+@st.cache_data(ttl=600)
 def cargar_tabla_mysql(nombre_tabla):
+    if engine is None:
+        return pd.DataFrame()
     try:
         query = f"SELECT * FROM {nombre_tabla}"
         df = pd.read_sql(query, con=engine)
