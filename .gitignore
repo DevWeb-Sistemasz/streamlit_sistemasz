@@ -9,7 +9,7 @@ venv/
 env/
 .env/
 
-# Archivos locales de base de datos (ya la tienes en cPanel, no necesitas subir el script)
+# Archivos locales de base de datos 
 base de datos.sql
 
 # Secretos y credenciales locales (crucial para seguridad)
